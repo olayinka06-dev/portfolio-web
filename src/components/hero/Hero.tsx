@@ -70,21 +70,21 @@ const code = [
 function EditorVisual() {
   const ref = useTilt();
   return (
-    <div className="relative mx-auto aspect-5/4 w-full max-w-lg [perspective:1400px]">
+    <div className="relative mx-auto aspect-5/4 w-full max-w-lg perspective-[1400px]">
       <div
         ref={ref}
-        className="relative size-full transition-transform duration-700 ease-out-expo [transform-style:preserve-3d]"
+        className="relative size-full transition-transform duration-700 ease-out-expo transform-3d"
         style={{ transform: "rotateX(var(--rx, 8deg)) rotateY(var(--ry, -14deg))" } as CSSProperties}
       >
         {/* back plane: grid */}
-        <div className="bg-grid absolute inset-0 rounded-xl border border-border [transform:translateZ(-80px)_scale(1.08)]" />
+        <div className="bg-grid absolute inset-0 rounded-xl border border-border transform-[translateZ(-80px)_scale(1.08)]" />
 
         {/* wireframe rings */}
-        <div className="absolute -right-6 -top-8 size-40 rounded-full border border-border-strong [transform:translateZ(-40px)]" />
-        <div className="absolute -right-2 -top-4 size-28 rounded-full border border-dashed border-border-strong [transform:translateZ(-20px)]" />
+        <div className="absolute -right-6 -top-8 size-40 rounded-full border border-border-strong transform-[translateZ(-40px)]" />
+        <div className="absolute -right-2 -top-4 size-28 rounded-full border border-dashed border-border-strong transform-[translateZ(-20px)]" />
 
         {/* editor window */}
-        <div className="absolute inset-x-0 top-[8%] overflow-hidden rounded-xl border border-border-strong bg-surface-raised shadow-lift [transform:translateZ(20px)]">
+        <div className="absolute inset-x-0 top-[8%] overflow-hidden rounded-xl border border-border-strong bg-surface-raised shadow-lift transform-[translateZ(20px)]">
           <div className="flex items-center gap-2 border-b border-border px-4 py-3">
             <span className="size-2.5 rounded-full border border-border-strong" />
             <span className="size-2.5 rounded-full border border-border-strong" />
