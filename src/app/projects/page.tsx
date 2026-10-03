@@ -44,50 +44,67 @@ export default function ProjectsPage() {
 
       <Container className="section-y">
         <p className="mb-5 text-label">
-          {`// archive · ${projects.length} projects`}
+          {`// archive`} · {projects.length} projects
         </p>
 
         <h1 className="text-display">Projects</h1>
 
         <div className="mt-16 divide-y divide-border border-y border-border">
-          {projects.map((project, index) => (
-            <Reveal key={project.slug}>
+          {projects.map((p, i) => (
+            <Reveal key={p.slug}>
               <article className="group grid gap-6 py-10 md:grid-cols-12 md:gap-8">
-                <ProjectVisual
-                  project={project}
-                  className="aspect-16/10 md:col-span-5"
-                />
+                <Link
+                  href={`/projects/${p.slug}`}
+                  className="block md:col-span-5"
+                  aria-label={`Read ${p.name} case study`}
+                >
+                  <ProjectVisual
+                    project={p}
+                    className="aspect-16/10"
+                  />
+                </Link>
 
                 <div className="flex flex-col gap-4 md:col-span-7">
                   <p className="text-label">
                     <span className="text-foreground">
-                      {String(index + 1).padStart(2, "0")}
+                      {String(i + 1).padStart(2, "0")}
                     </span>{" "}
                     <span className="text-subtle">/</span>{" "}
-                    {project.category}
+                    {p.category}
                   </p>
 
                   <h2 className="text-3xl font-semibold tracking-tight">
-                    {project.name}
+                    <Link
+                      href={`/projects/${p.slug}`}
+                      className="hover:text-muted-foreground"
+                    >
+                      {p.name}
+                    </Link>
                   </h2>
 
-                  <p className="text-muted-foreground">
-                    {project.summary}
-                  </p>
+                  <p className="text-muted-foreground">{p.summary}</p>
 
-                  {project.products && (
+                  {p.products && (
                     <p className="font-mono text-xs text-muted-foreground">
-                      {project.products.join(" · ")}
+                      {p.products.join(" · ")}
                     </p>
                   )}
 
                   <div className="mt-auto flex flex-wrap gap-1.5">
-                    {project.stack.map((id) => (
+                    {p.stack.map((id) => (
                       <Badge key={id}>
-                        {allSkills.find((skill) => skill.id === id)?.name ?? id}
+                        {allSkills.find((s) => s.id === id)?.name ?? id}
                       </Badge>
                     ))}
                   </div>
+
+                  <Link
+                    href={`/projects/${p.slug}`}
+                    className="mt-3 inline-flex items-center gap-2 text-label text-foreground"
+                  >
+                    Read case study{" "}
+                    <span aria-hidden="true">→</span>
+                  </Link>
                 </div>
               </article>
             </Reveal>
