@@ -16,7 +16,7 @@ function Words({ words, start }: { words: string[]; start: number }) {
       {words.map((w, i) => (
         <span
           key={w}
-          className="inline-block overflow-hidden pb-[0.08em] align-bottom"
+          className="inline-block overflow-hidden pb-[0.08em] align-bottom "
         >
           <span
             className="word-rise"
