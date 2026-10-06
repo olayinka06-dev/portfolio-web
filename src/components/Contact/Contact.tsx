@@ -2,7 +2,8 @@
 
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
-import { ArrowUpRight, Check, Loader2, Mail } from "lucide-react";
+import { ArrowUpRight, Loader2, Mail } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { Section, SectionHeading } from "@/components/layout/primitives";
 import { Reveal } from "@/components/motion/reveal";
@@ -23,7 +24,7 @@ const schema = z.object({
     .string()
     .trim()
     .email("Enter a valid email address")
-    .max(255),
+    .max(255, "Enter a valid email address"),
 
   message: z
     .string()
@@ -33,7 +34,6 @@ const schema = z.object({
 });
 
 type Fields = z.infer<typeof schema>;
-type Status = "idle" | "loading" | "success" | "error";
 
 const links = [
   {
@@ -62,7 +62,7 @@ export function Contact() {
   const [errors, setErrors] = useState<
     Partial<Record<keyof Fields, string>>
   >({});
-  const [status, setStatus] = useState<Status>("idle");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -100,37 +100,39 @@ export function Contact() {
     }
 
     if (isPlaceholder(contact.email)) {
-      setStatus("error");
+      toast.error("Contact email is not configured.");
       return;
     }
 
     setErrors({});
-    setStatus("loading");
+    setIsSubmitting(true);
 
     try {
-      const { name, email, message } = parsed.data;
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(parsed.data),
+      });
 
-      const subject = encodeURIComponent(
-        `Portfolio enquiry from ${name}`,
-      );
+      const result = await response.json();
 
-      const body = encodeURIComponent(
-        `${message}\n\n— ${name} (${email})`,
-      );
+      if (!response.ok || !result.success) {
+        throw new Error(
+          result.message ?? "Failed to send message",
+        );
+      }
 
-      /*
-       * We use mailto instead of an external email service.
-       * This keeps the portfolio completely free and serverless.
-       */
-      window.location.href =
-        `mailto:${contact.email}?subject=${subject}&body=${body}`;
-
-      await new Promise((resolve) => setTimeout(resolve, 400));
-
-      setStatus("success");
       form.reset();
+
+      toast.success("Message sent successfully.");
     } catch {
-      setStatus("error");
+      toast.error(
+        "Couldn't send your message. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -170,7 +172,6 @@ export function Contact() {
       />
 
       <div className="grid gap-12 md:grid-cols-12 md:gap-8">
-        {/* Contact details */}
         <Reveal className="space-y-8 md:col-span-4 md:col-start-1 lg:col-span-3">
           <p className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 font-mono text-xs">
             <span
@@ -224,115 +225,88 @@ export function Contact() {
           </ul>
         </Reveal>
 
-        {/* Contact form */}
         <Reveal
           delay={80}
           className="md:col-span-8 lg:col-span-8 lg:col-start-5"
         >
-          {status === "success" ? (
-            <div
-              role="status"
-              className="rounded-lg border border-border bg-card p-8 shadow-soft"
-            >
-              <Check className="size-6" />
+          <form
+            noValidate
+            onSubmit={onSubmit}
+            className="relative space-y-5 rounded-lg border border-border bg-card p-6 shadow-soft md:p-8"
+          >
+            {/* Honeypot field for simple bot protection */}
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="absolute left-[-9999px] h-px w-px opacity-0"
+            />
 
-              <h3 className="mt-4 text-2xl font-medium tracking-tight">
-                Your message is ready.
-              </h3>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="contact-name">Name</Label>
 
-              <p className="text-lead mt-2">
-                Your email app should have opened with your message
-                prefilled. Review it and hit send.
-              </p>
+                <Input
+                  {...field("name")}
+                  autoComplete="name"
+                  maxLength={100}
+                />
 
-              <Button
-                variant="outline"
-                className="mt-6"
-                onClick={() => setStatus("idle")}
-              >
-                Write another
-              </Button>
-            </div>
-          ) : (
-            <form
-              noValidate
-              onSubmit={onSubmit}
-              className="space-y-5 rounded-lg border border-border bg-card p-6 shadow-soft md:p-8"
-            >
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="contact-name">Name</Label>
-
-                  <Input
-                    {...field("name")}
-                    autoComplete="name"
-                    maxLength={100}
-                  />
-
-                  {errorMessage("name")}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="contact-email">Email</Label>
-
-                  <Input
-                    {...field("email")}
-                    type="email"
-                    autoComplete="email"
-                    maxLength={255}
-                  />
-
-                  {errorMessage("email")}
-                </div>
+                {errorMessage("name")}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="contact-message">Message</Label>
+                <Label htmlFor="contact-email">Email</Label>
 
-                <Textarea
-                  {...field("message")}
-                  rows={6}
-                  maxLength={1000}
-                  placeholder="What are you building?"
+                <Input
+                  {...field("email")}
+                  type="email"
+                  autoComplete="email"
+                  maxLength={255}
                 />
 
-                {errorMessage("message")}
+                {errorMessage("email")}
               </div>
+            </div>
 
-              {status === "error" && (
-                <p
-                  role="alert"
-                  className="rounded-md border border-destructive/40 px-3 py-2 font-mono text-xs text-destructive"
-                >
-                  Couldn&apos;t open your email app. Please try again or
-                  reach out directly using the links.
-                </p>
-              )}
+            <div className="space-y-2">
+              <Label htmlFor="contact-message">Message</Label>
 
-              <div className="flex items-center justify-between gap-4 pt-2">
-                <p className="font-mono text-xs text-subtle">
-                  opens your email app
-                </p>
+              <Textarea
+                {...field("message")}
+                rows={6}
+                maxLength={1000}
+                placeholder="What are you building?"
+              />
 
-                <Button
-                  type="submit"
-                  disabled={status === "loading"}
-                >
-                  {status === "loading" ? (
-                    <>
-                      <Loader2 className="animate-spin" />
-                      Opening...
-                    </>
-                  ) : (
-                    <>
-                      <Mail />
-                      Send message
-                    </>
-                  )}
-                </Button>
-              </div>
-            </form>
-          )}
+              {errorMessage("message")}
+            </div>
+
+            <div className="flex items-center justify-between gap-4 pt-2">
+              <p className="font-mono text-xs text-subtle">
+                your message goes straight to my inbox
+              </p>
+
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Mail />
+                    Send message
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
         </Reveal>
       </div>
     </Section>

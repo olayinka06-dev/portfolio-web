@@ -10,7 +10,7 @@ export function EasterEggs() {
 
   useEffect(() => {
     console.log(
-      "%c~/abdulrahman %c— you opened the console. Respect.\n%cTry: hire()",
+      "%colayinka.dev %c— you opened the console. Respect.\n%cTry: hire()",
       "font:600 13px monospace",
       "font:13px monospace;color:gray",
       "font:12px monospace;color:gray",

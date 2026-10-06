@@ -1,9 +1,11 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { OlayinkaLogo } from "../brand/OlayinkaLogo";
 
 export const RESUME_URL = "/resume.pdf";
 
@@ -18,10 +20,14 @@ export const navItems = [
 function useActiveSection() {
   const [active, setActive] = useState("#home");
   useEffect(() => {
-    const els = navItems.map((n) => document.querySelector(n.href)).filter(Boolean) as Element[];
+    const els = navItems
+      .map((n) => document.querySelector(n.href))
+      .filter(Boolean) as Element[];
     const io = new IntersectionObserver(
       (entries) => {
-        entries.forEach((e) => e.isIntersecting && setActive(`#${e.target.id}`));
+        entries.forEach(
+          (e) => e.isIntersecting && setActive(`#${e.target.id}`),
+        );
       },
       { rootMargin: "-45% 0px -50% 0px" },
     );
@@ -61,33 +67,48 @@ export function SiteNav() {
               : "max-w-304 border-transparent px-2 py-3 md:px-8",
           )}
         >
-          <a href="#home" className="group flex items-center gap-1.5 px-2 font-mono text-sm" onClick={() => setOpen(false)}>
-            <span className="text-subtle transition-colors group-hover:text-foreground">~/</span>
-            <span className="font-medium">abdulrahman</span>
-          </a>
+          <Link
+            href="#home"
+            aria-label="Olayinka Dev — home"
+            className="group inline-flex items-center gap-2"
+          >
+            <OlayinkaLogo className="size-7 transition-opacity group-hover:opacity-70" />
+            <span className="font-mono text-sm font-medium tracking-tight">
+              olayinka.dev
+            </span>
+          </Link>
 
           <nav className="hidden items-center lg:flex" aria-label="Primary">
             {navItems.map((item) => {
               const isActive = active === item.href;
               return (
-                <a
+                <Link
                   key={item.href}
                   href={item.href}
                   aria-current={isActive ? "true" : undefined}
                   className={cn(
                     "relative rounded-md px-3 py-1.5 font-mono text-xs transition-colors",
-                    isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                    isActive
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {isActive && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-foreground" />}
+                  {isActive && (
+                    <span className="absolute inset-x-3 -bottom-0.5 h-px bg-foreground" />
+                  )}
                   {item.label}
-                </a>
+                </Link>
               );
             })}
           </nav>
 
           <div className="flex items-center gap-1">
-            <Button asChild variant="mono" size="sm" className="hidden sm:inline-flex">
+            <Button
+              asChild
+              variant="mono"
+              size="sm"
+              className="hidden sm:inline-flex"
+            >
               <a href={RESUME_URL} target="_blank" rel="noreferrer">
                 Resume <ArrowUpRight />
               </a>
@@ -112,7 +133,7 @@ export function SiteNav() {
           <p className="text-label mb-4">{`// navigate`}</p>
           <nav className="flex flex-col" aria-label="Mobile">
             {navItems.map((item, i) => (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
@@ -120,21 +141,33 @@ export function SiteNav() {
                 className="fade-up group flex items-baseline justify-between border-b border-border py-4"
               >
                 <span className="flex items-baseline gap-4">
-                  <span className="font-mono text-xs text-subtle">0{i + 1}</span>
-                  <span className={cn("text-4xl font-medium tracking-tight", active === item.href ? "text-foreground" : "text-muted-foreground group-hover:text-foreground")}>
+                  <span className="font-mono text-xs text-subtle">
+                    0{i + 1}
+                  </span>
+                  <span
+                    className={cn(
+                      "text-4xl font-medium tracking-tight",
+                      active === item.href
+                        ? "text-foreground"
+                        : "text-muted-foreground group-hover:text-foreground",
+                    )}
+                  >
                     {item.label}
                   </span>
                 </span>
                 <ArrowUpRight className="size-5 text-subtle" />
-              </a>
+              </Link>
             ))}
           </nav>
           <div className="mt-auto flex items-center justify-between gap-3">
             <Button asChild variant="outline" className="flex-1">
-              <a href={RESUME_URL} target="_blank" rel="noreferrer">Download Resume</a>
+              <a href={RESUME_URL} target="_blank" rel="noreferrer">
+                Download Resume
+              </a>
             </Button>
             <span className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground">
-              <span className="pulse-dot size-1.5 rounded-full bg-foreground" /> available
+              <span className="pulse-dot size-1.5 rounded-full bg-foreground" />{" "}
+              available
             </span>
           </div>
         </div>
