@@ -59,7 +59,7 @@ export function About() {
         <div className="space-y-6 md:col-span-9 lg:col-span-6">
           <Reveal>
             <p className="text-lg leading-relaxed md:text-xl">
-              I&apos;m Abdulrahman, a full-stack developer who takes ideas from
+              I&apos;m Idiagbon Saadu Abdulrahman, a full-stack developer who takes ideas from
               a rough description to a working product people can use.
             </p>
           </Reveal>
