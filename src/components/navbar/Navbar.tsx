@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { OlayinkaLogo } from "../brand/OlayinkaLogo";
 
-export const RESUME_URL = "/resume.docx";
+export const RESUME_URL = "/resume.pdf";
 
 export const navItems = [
   { label: "Home", href: "#home" },
