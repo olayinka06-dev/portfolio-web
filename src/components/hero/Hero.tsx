@@ -270,6 +270,7 @@ export function Hero() {
           >
             {[
               "Next.js",
+              "React.js",
               "TypeScript",
               "Node.js",
               "Socket.IO",
