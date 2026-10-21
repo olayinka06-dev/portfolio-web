@@ -4,6 +4,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
+  Layers3,
 } from "lucide-react";
 
 import { Section, SectionHeading } from "@/components/layout/primitives";
@@ -316,9 +317,134 @@ function SuiteCard({ project, index }: { project: Project; index: number }) {
   );
 }
 
-export function Projects() {
-  const [first, second, third] = featuredProjects;
 
+/**
+ * Flagship presentation for Tulu.
+ * Keeps the five products inside one ecosystem and foregrounds only confirmed
+ * responsibilities. Product names are informational, not separate links.
+ */
+function FeaturedTuluProject({ project }: { project: Project }) {
+  const contributions = [
+    "Frontend development",
+    "API integrations",
+    "Application logic",
+  ];
+
+  return (
+    <article
+      className={cn(
+        shell,
+        "grid gap-0 lg:grid-cols-12",
+      )}
+    >
+      <div className="flex flex-col p-6 sm:p-8 lg:col-span-5 lg:p-10">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-label flex items-center gap-2">
+            <span className="text-foreground">01</span>
+            <span className="text-subtle">/</span>
+            {project.category}
+          </p>
+          <span className="font-mono text-[0.625rem] uppercase tracking-wider text-subtle">
+            Featured
+          </span>
+        </div>
+
+        <div className="mt-8">
+          <div className="mb-4 flex size-11 items-center justify-center rounded-lg border border-border bg-surface-raised">
+            <Layers3 className="size-5 text-foreground" aria-hidden="true" />
+          </div>
+          <h3 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+            <Link
+              href={`/projects/${project.slug}`}
+              className="transition-colors hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
+            >
+              {project.name}
+            </Link>
+          </h3>
+          <p className="text-lead mt-4">{project.summary}</p>
+        </div>
+
+        <div className="mt-8 border-t border-border pt-5">
+          <p className="text-label mb-3 text-subtle">My contribution</p>
+          <ul className="flex flex-wrap gap-2">
+            {contributions.map((item) => (
+              <li
+                key={item}
+                className="rounded-md border border-border bg-surface-raised px-3 py-1.5 text-sm text-foreground"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mt-8 flex items-center justify-between gap-4 border-t border-border pt-5 lg:mt-auto lg:pt-6">
+          <span className="font-mono text-[0.6875rem] text-subtle">
+            05 products · One case study
+          </span>
+          <Link
+            href={`/projects/${project.slug}`}
+            className="text-label inline-flex shrink-0 items-center gap-2 text-foreground transition-colors hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
+            aria-label={`Explore the ${project.name} case study`}
+          >
+            Explore case study
+            <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </Link>
+        </div>
+      </div>
+
+      <div className="border-t border-border bg-surface/50 p-4 sm:p-6 lg:col-span-7 lg:border-l lg:border-t-0 lg:p-8">
+        <div className="flex h-full flex-col rounded-lg border border-border bg-card p-4 sm:p-5 lg:p-6">
+          <div className="flex items-start justify-between gap-4 border-b border-border pb-4">
+            <div>
+              <p className="text-label text-subtle">Product ecosystem</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Five products · One professional engagement
+              </p>
+            </div>
+            <span className="font-mono text-xs text-subtle">TULU / 05</span>
+          </div>
+
+          <div className="mt-4 grid flex-1 grid-cols-1 gap-2 sm:grid-cols-2">
+            {project.products?.map((product, index) => (
+              <div
+                key={product}
+                className={cn(
+                  "group/product flex min-h-20 items-center gap-3 rounded-md border border-border bg-background px-3 py-3 transition-[border-color,transform,background-color] duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-raised sm:px-4",
+                  index === 4 && "sm:col-span-2",
+                )}
+              >
+                <span className="font-mono text-[0.6875rem] text-subtle">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="min-w-0 flex-1 text-sm font-medium sm:text-base">
+                  {product}
+                </span>
+                <ArrowUpRight
+                  className="size-4 shrink-0 text-subtle opacity-0 transition-[opacity,transform,color] duration-300 group-hover/product:translate-x-0.5 group-hover/product:-translate-y-0.5 group-hover/product:text-foreground group-hover/product:opacity-100"
+                  aria-hidden="true"
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 flex items-center gap-2 border-t border-border pt-4">
+            <span className="size-1.5 rounded-full bg-foreground" />
+            <p className="text-xs text-muted-foreground">
+              Frontend development, API integrations and application logic
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export function Projects() {
+  const tulu = featuredProjects.find((project) => project.slug === "tulu");
+  const otherProjects = featuredProjects.filter(
+    (project) => project.slug !== "tulu",
+  );
   return (
     <Section id="projects">
       <SectionHeading
@@ -329,25 +455,21 @@ export function Projects() {
       />
 
       <div className="grid gap-4 md:gap-5">
-        {first && (
+        {tulu && (
           <Reveal>
-            <FeatureCard project={first} index={0} />
+            <FeaturedTuluProject project={tulu} />
           </Reveal>
         )}
 
-        <div className="grid gap-4 md:grid-cols-2 md:gap-5">
-          {second && (
-            <Reveal>
-              <StackedCard project={second} index={1} />
-            </Reveal>
-          )}
-
-          {third && (
-            <Reveal delay={80}>
-              <SuiteCard project={third} index={2} />
-            </Reveal>
-          )}
-        </div>
+        {otherProjects.length > 0 && (
+          <div className="grid gap-4 md:grid-cols-2 md:gap-5">
+            {otherProjects.map((project, index) => (
+              <Reveal key={project.slug} delay={index * 80}>
+                <StackedCard project={project} index={index + 1} />
+              </Reveal>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-border pt-8 sm:flex-row sm:items-center">

@@ -224,8 +224,9 @@ export const projects: Project[] = [
     name: "Tulu",
     category: "Fintech ecosystem",
     summary:
-      "A fintech ecosystem spanning payments, exchange, digital assets, wallets and transaction infrastructure across multiple products.",
-    stack: ["nextjs", "typescript", "nodejs", "prisma"],
+      "Professional fintech experience across five products: Voucher Pay, TuluPay Exchange, Tulu Asset, Tulu Purse and Tulu Switch.",
+    // Keep empty until the technologies personally used on Tulu are verified.
+    stack: [],
     products: [
       "Voucher Pay",
       "TuluPay Exchange",
@@ -236,7 +237,7 @@ export const projects: Project[] = [
     featured: true,
     caseStudy: {
       overview:
-        "Tulu is a fintech ecosystem made up of multiple products covering payments, exchange, digital assets, wallets and transaction infrastructure.",
+        "Tulu is a fintech product ecosystem spanning Voucher Pay, TuluPay Exchange, Tulu Asset, Tulu Purse and Tulu Switch.",
 
       challenge: pending(
         "Challenge",
@@ -245,7 +246,7 @@ export const projects: Project[] = [
 
       contribution: {
         label: "My contribution",
-        body: "I contributed to frontend development across Tulu's fintech product ecosystem, working on interfaces and product experiences within the applications.",
+        body: "I worked on frontend development, API integrations and application logic across Voucher Pay, TuluPay Exchange, Tulu Asset, Tulu Purse and Tulu Switch.",
       },
 
       architecture: pending(
